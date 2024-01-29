@@ -14,7 +14,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: '(onboarding)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -23,6 +23,9 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Light:require('../assets/fonts/Lexend-Light.ttf'),
+    Regular:require('../assets/fonts/Lexend-Regular.ttf'),
+    Bold:require('../assets/fonts/Lexend-Bold.ttf'),
     ...FontAwesome.font,
   });
 
@@ -49,9 +52,14 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      <Stack >
+        <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/otp" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/password" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/info" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/phone" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );

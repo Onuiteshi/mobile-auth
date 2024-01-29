@@ -1,0 +1,170 @@
+import { StatusBar } from 'expo-status-bar';
+import {Platform, SafeAreaView, StyleSheet, TouchableOpacity, Image, View, Text, TextInput, Alert} from 'react-native';
+import {Ionicons} from "@expo/vector-icons";
+import {useForm, Controller, SubmitErrorHandler} from 'react-hook-form';
+import {Checkbox} from "expo-checkbox";
+import {useState} from "react";
+import {useRouter} from "expo-router";
+import axios from "axios";
+
+
+type FormData = {
+    email: string;
+}
+
+export default function Signup() {
+    const [isChecked, setChecked] = useState(false);
+    const router:any = useRouter()
+
+    const {  handleSubmit, control, formState: { errors } } = useForm<FormData>({});
+    const onSubmit = data => {
+        axios.get(`https://cardex.live/api/email/send/verification-code?email=${data.email}`).then((r) => {
+            // console.log(r)
+            if(r.data.statusCode === 200) {
+                Alert.alert("Please check your email for verification code")
+                setTimeout(() => {
+                    router.push({pathname: "/auth/otp", params: {email: data.email}});
+                },3000)
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+    };
+
+    return (
+        <View style={styles.container}>
+            <View>
+                <SafeAreaView style={{ backgroundColor: "#EDF6F5" }}>
+                    <StatusBar
+                        barStyle={"dark-content"}
+                        translucent
+                        backgroundColor={"#EDF6F5"}
+                    />
+                </SafeAreaView>
+                <View
+                    style={styles.topBar}
+                    className=" flex-row items-center justify-between py-1.5 pt-3 px-3"
+                >
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Ionicons
+                            className=""
+                            name="arrow-back"
+                            size={30}
+                            color={"#1A0E2C"}
+                        />
+                    </TouchableOpacity>
+                    <Image source={require("../../assets/images/logo.png")} resizeMode={"contain"} style={{width: 21, height: 21}} />
+
+                </View>
+            </View>
+            <View style={{paddingHorizontal:20}}>
+                <View style={{marginTop:10}}>
+                    <Text style={styles.title}>Sign up</Text>
+                    <Text style={{fontFamily:"Light",fontSize:18,color:"#000000"}}>We will use this email address to authenticate logins to your account</Text>
+                </View>
+                <View style={{marginTop:40}}>
+                    <View>
+                        <Text style={styles.label}>Email Address</Text>
+                        <Controller
+                            control={control}
+                            render={({field: { onChange, onBlur, value }}) => (
+                                <TextInput
+                                    style={styles.input}
+                                    onBlur={onBlur}
+                                    onChangeText={value => onChange(value)}
+                                    value={value}
+                                    keyboardType={"email-address"}
+                                    placeholder="Enter your email address"
+                                    placeholderTextColor={"#6A6A6A"}
+                                />
+                            )}
+                            name="email"
+                            rules={{ required: true }}
+                        />
+                        {errors.email && <Text style={{color:"red",fontSize:10,fontFamily:"Light"}}>This is required.</Text>}
+                    </View>
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            value={isChecked}
+                            onValueChange={setChecked}
+                            style={styles.checkbox}
+                        />
+                        <View style={{marginLeft:10}}>
+                            <Text style={{fontFamily:"Light",fontSize:12,color:"#494D50"}}>
+                                By signing up, I confirm I accept the Terms of Use
+                            </Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity onPress={handleSubmit(onSubmit)} style={styles.btn}>
+                        <Text style={styles.btnTitle}>Proceed</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor:"#EDF6F5"
+    },
+    topBar: {
+        backgroundColor: "#EDF6F5",
+        marginTop: Platform.OS === "android" ? 25 : null,
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"space-between",
+        paddingVertical:10,
+        paddingHorizontal:20
+    },
+    title: {
+        fontSize: 30,
+        fontFamily:"Bold",
+        color:"#000000",
+        marginBottom:10
+    },
+    label: {
+        fontSize: 14,
+        fontFamily:"Regular",
+        color:"#BEBEBE",
+        marginBottom:5
+    },
+    input: {
+        fontSize: 14,
+        fontFamily:"Regular",
+        color:"#000000",
+        marginBottom:10,
+        backgroundColor:"rgba(209, 209, 209, 0.2)",
+        paddingHorizontal:10,
+        paddingVertical:23,
+        borderRadius:10
+    },
+    checkboxContainer: {
+        flexDirection: "row",
+        marginTop: 10,
+        alignItems: "center",
+    },
+    checkbox: {
+        alignSelf: "center",
+        backgroundColor: "#fff",
+        borderWidth: 1,
+        borderColor: "#47EAA6",
+        color: "#47EAA6",
+        width: 17,
+        height: 17,
+    },
+    btn: {
+        backgroundColor: "#47EAA6",
+        borderRadius: 10,
+        paddingVertical: 20,
+        marginTop: 20
+    },
+    btnTitle: {
+        color: "#042B2E",
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily:"Regular"
+    }
+});
