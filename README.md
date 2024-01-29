@@ -7,12 +7,14 @@ This is a simple auth flow that shows the implementation of onboarding users thr
     -OTP code for email verification
     -Personal Infos
     -Login
+    -Unit Test
 
 This project is built with Expo React Native using Expo Router for Navigation.
+Unit Test are places in the components folder
 
 How to use; 
 
-    git clone 
+    git clone https://github.com/Onuiteshi/mobile-auth.git
     cd mobile-auth;
     npx expo install;
     npm install;
